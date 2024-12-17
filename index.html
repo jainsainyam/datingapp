@@ -2,103 +2,77 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Persist Ventures - Dating App Prototype</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f4f4f4;
-        }
-        .profile-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-        }
-        .profile-card {
-            background-color: white;
-            border-radius: 10px;
-            padding: 15px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-        .action-buttons {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 15px;
-        }
-        .like-btn, .dislike-btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .like-btn {
-            background-color: #4CAF50;
-            color: white;
-        }
-        .dislike-btn {
-            background-color: #f44336;
-            color: white;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mystery Match</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="profile-grid" id="profileContainer">
-        <!-- Profiles will be dynamically inserted here -->
-    </div>
-    <script>
-        // Simulated user data
-        const users = [
-            {
-                id: '1',
-                name: 'Alex',
-                age: 28,
-                interests: ['Tech', 'Hiking', 'Photography'],
-                bio: 'Software engineer who loves outdoor adventures'
-            },
-            {
-                id: '2',
-                name: 'Sam',
-                age: 26,
-                interests: ['Design', 'Travel', 'Music'],
-                bio: 'Creative professional with a passion for exploring'
-            },
-            // More user profiles...
-        ];
+    <div id="app">
+        <div id="loginScreen" class="screen">
+            <div class="login-container">
+                <h1>Mystery Match</h1>
+                <form id="loginForm">
+                    <input type="tel" placeholder="Phone Number" required>
+                    <input type="text" placeholder="Verification Code" required>
+                    <button type="submit">Continue</button>
+                </form>
+               
+                </div>
+            </div>
+        </div>
 
-        function renderProfiles(profiles) {
-            const container = document.getElementById('profileContainer');
-            container.innerHTML = ''; // Clear existing profiles
+        <div id="matchScreen" class="screen hidden">
+            <div class="header">
+                <button id="profileBtn"><i class="fas fa-user"></i></button>
+                <img src="logo.png" alt="Mystery Match" class="logo">
+                <button id="messagesBtn"><i class="fas fa-comments"></i></button>
+            </div>
 
-            profiles.forEach(profile => {
-                const profileCard = document.createElement('div');
-                profileCard.classList.add('profile-card');
-                profileCard.innerHTML = `
-                    <h3>${profile.name}, ${profile.age}</h3>
-                    <p>${profile.bio}</p>
-                    <div class="action-buttons">
-                        <button class="like-btn" onclick="handleLike('${profile.id}')">❤️ Like</button>
-                        <button class="dislike-btn" onclick="handleDislike('${profile.id}')">👎 Pass</button>
+            <div class="card-container">
+                <div id="swipeCard" class="swipe-card">
+                    <div class="profile-image">
+                        <img src="" alt="Profile" id="profileImage">
                     </div>
-                `;
-                container.appendChild(profileCard);
-            });
-        }
+                    <div class="profile-details">
+                        <h2 id="profileName">Name, Age</h2>
+                        <p id="profileBio">Bio details</p>
+                        <div class="profile-interests">
+                            <span class="interest">Tech</span>
+                            <span class="interest">Travel</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-        function handleLike(profileId) {
-            console.log(`Liked profile: ${profileId}`);
-            // Matching logic would be implemented here
-        }
+            <div class="action-buttons">
+                <button id="dislikeBtn" class="action-btn dislike">
+                    <i class="fas fa-times"></i>
+                </button>
+                <button id="superLikeBtn" class="action-btn super-like">
+                    <i class="fas fa-star"></i>
+                </button>
+                <button id="likeBtn" class="action-btn like">
+                    <i class="fas fa-heart"></i>
+                </button>
+            </div>
 
-        function handleDislike(profileId) {
-            console.log(`Passed on profile: ${profileId}`);
-            // Dislike logic would be implemented here
-        }
-
-        // Initial render with random profiles
-        renderProfiles(users.sort(() => 0.5 - Math.random()).slice(0, 4));
-    </script>
+            <div id="matchModal" class="modal hidden">
+                <div class="modal-content">
+                    <h2>It's a Match!</h2>
+                    <div class="match-profiles">
+                        <img src="" alt="Your Profile" id="yourMatchProfile">
+                        <img src="" alt="Matched Profile" id="matchedProfile">
+                    </div>
+                    <p>You and <span id="matchName"></span> liked each other!</p>
+                    <div class="modal-actions">
+                        <button id="sendMessageBtn">Send a Message</button>
+                        <button id="continueBtn">Continue Swiping</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="app.js"></script>
 </body>
 </html>
