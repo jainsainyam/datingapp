@@ -8,27 +8,23 @@ class MysteryMatchApp {
     }
 
     initEventListeners() {
-        // Login Screen
         document.getElementById('loginForm').addEventListener('submit', (e) => this.handleLogin(e));
-
-        // Match Screen Actions
         document.getElementById('dislikeBtn').addEventListener('click', () => this.swipeProfile('dislike'));
         document.getElementById('likeBtn').addEventListener('click', () => this.swipeProfile('like'));
         document.getElementById('superLikeBtn').addEventListener('click', () => this.swipeProfile('superLike'));
-
-        // Match Modal
-        document.getElementById('continueBtn').addEventListener('click', () => this.closeMatchModal());
+        
+        // Match Screen Listeners
+        document.getElementById('continueSwipingBtn').addEventListener('click', () => this.continueSwipe());
         document.getElementById('sendMessageBtn').addEventListener('click', () => this.sendMessage());
     }
 
     handleLogin(e) {
         e.preventDefault();
-        // Simulated login
         this.currentUser = { 
             id: 1, 
             name: 'Alex', 
             age: 28, 
-            profileImage: '/api/placeholder/400/400?text=You' 
+            profileImage: '/api/placeholder/400/400?text=Your+Profile' 
         };
         
         document.getElementById('loginScreen').classList.add('hidden');
@@ -39,15 +35,14 @@ class MysteryMatchApp {
     }
 
     generateProfiles() {
-        // Simulated profile generation with placeholder images
-        this.profiles = [
+        const adventureProfiles = [
             {
                 id: 'mystery1',
                 name: 'Taylor',
                 age: 26,
                 bio: 'Adventure seeker and coffee lover',
                 interests: ['Travel', 'Photography', 'Hiking'],
-                profileImage: '/api/placeholder/400/400?text=Taylor',
+                profileImage: '/api/placeholder/400/400?text=Taylor+Profile',
                 isMatch: true
             },
             {
@@ -56,7 +51,7 @@ class MysteryMatchApp {
                 age: 29,
                 bio: 'Tech enthusiast and music producer',
                 interests: ['Tech', 'Music', 'Cooking'],
-                profileImage: '/api/placeholder/400/400?text=Jordan',
+                profileImage: '/api/placeholder/400/400?text=Jordan+Profile',
                 isMatch: false
             },
             {
@@ -65,25 +60,30 @@ class MysteryMatchApp {
                 age: 24,
                 bio: 'Art director with a passion for sustainable living',
                 interests: ['Art', 'Design', 'Environment'],
-                profileImage: '/api/placeholder/400/400?text=Riley',
+                profileImage: '/api/placeholder/400/400?text=Riley+Profile',
                 isMatch: false
             }
         ];
+
+        this.profiles = adventureProfiles.sort(() => Math.random() - 0.5);
     }
 
     loadNextProfile() {
         if (this.profiles.length === 0) {
-            this.generateProfiles(); // Regenerate if empty
+            this.generateProfiles();
         }
 
         this.currentProfile = this.profiles.pop();
         
-        document.getElementById('profileImage').src = this.currentProfile.profileImage;
-        document.getElementById('profileName').textContent = `${this.currentProfile.name}, ${this.currentProfile.age}`;
-        document.getElementById('profileBio').textContent = this.currentProfile.bio;
-
-        // Update interests
+        const profileImageEl = document.getElementById('profileImage');
+        const profileNameEl = document.getElementById('profileName');
+        const profileBioEl = document.getElementById('profileBio');
         const interestsContainer = document.querySelector('.profile-interests');
+
+        profileImageEl.src = this.currentProfile.profileImage;
+        profileNameEl.textContent = `${this.currentProfile.name}, ${this.currentProfile.age}`;
+        profileBioEl.textContent = this.currentProfile.bio;
+
         interestsContainer.innerHTML = '';
         this.currentProfile.interests.forEach(interest => {
             const span = document.createElement('span');
@@ -94,38 +94,57 @@ class MysteryMatchApp {
     }
 
     swipeProfile(action) {
-        // Simulate swipe interaction
-        if (action === 'like' && this.currentProfile.isMatch) {
-            this.showMatchModal();
-        } else if (action === 'superLike' && this.currentProfile.isMatch) {
-            this.showMatchModal();
+        const swipeCard = document.getElementById('swipeCard');
+        
+        swipeCard.style.transition = 'transform 0.5s ease';
+        
+        if (action === 'like') {
+            swipeCard.style.transform = 'translateX(100%) rotate(15deg)';
+        } else if (action === 'dislike') {
+            swipeCard.style.transform = 'translateX(-100%) rotate(-15deg)';
         }
 
-        // Load next profile
-        this.loadNextProfile();
+        // Simulate match
+        if ((action === 'like' || action === 'superLike') && this.currentProfile.isMatch) {
+            setTimeout(() => this.showMatchScreen(), 300);
+            return;
+        }
+
+        // Load next profile after animation
+        setTimeout(() => {
+            this.loadNextProfile();
+            swipeCard.style.transition = 'none';
+            swipeCard.style.transform = 'none';
+        }, 500);
     }
 
-    showMatchModal() {
-        const modal = document.getElementById('matchModal');
+    showMatchScreen() {
+        const matchScreen = document.getElementById('matchedScreen');
+        const matchScreen2 = document.getElementById('matchScreen');
         const matchName = document.getElementById('matchName');
         const yourProfile = document.getElementById('yourMatchProfile');
-        const matchProfile = document.getElementById('matchedProfile');
+        const matchedProfile = document.getElementById('matchedProfile');
 
         matchName.textContent = this.currentProfile.name;
         yourProfile.src = this.currentUser.profileImage;
-        matchProfile.src = this.currentProfile.profileImage;
+        matchedProfile.src = this.currentProfile.profileImage;
 
-        modal.classList.remove('hidden');
+        matchScreen2.classList.add('hidden');
+        matchScreen.classList.remove('hidden');
     }
 
-    closeMatchModal() {
-        document.getElementById('matchModal').classList.add('hidden');
+    continueSwipe() {
+        const matchScreen = document.getElementById('matchedScreen');
+        const matchScreen2 = document.getElementById('matchScreen');
+
+        matchScreen.classList.add('hidden');
+        matchScreen2.classList.remove('hidden');
+        
+        this.loadNextProfile();
     }
 
     sendMessage() {
-        // Placeholder for messaging functionality
         alert(`Sending message to ${this.currentProfile.name}`);
-        this.closeMatchModal();
     }
 }
 
